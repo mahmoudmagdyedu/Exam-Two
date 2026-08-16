@@ -1,0 +1,10 @@
+@import "tailwindcss";
+.active{
+  @apply bg-emerald-50 text-emerald-700
+}
+.active-Two{
+    @apply bg-emerald-600 text-white
+}
+.btnActive{
+  @apply bg-blue-600 text-white hover:bg-blue-700
+}

@@ -1,0 +1,133 @@
+.loading {
+  display:none
+}
+
+#header-menu-btn,
+#sidebar-close-btn {
+  display: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: .75rem;
+  color: #4b5563;
+  transition: background-color .2s, color .2s;
+}
+
+#header-menu-btn:hover,
+#sidebar-close-btn:hover {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+#recipes-grid.recipes-list-view {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+#recipes-grid.recipes-list-view .recipe-card {
+  display: grid;
+  grid-template-columns: 16rem minmax(0, 1fr);
+}
+
+#recipes-grid.recipes-list-view .recipe-card > div:first-child {
+  height: 100%;
+  min-height: 11rem;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  background: rgb(17 24 39 / .5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .25s, visibility .25s;
+}
+
+@media (max-width: 1023px) {
+  #sidebar {
+    transform: translateX(-100%);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / .1), 0 8px 10px -6px rgb(0 0 0 / .1);
+    transition: transform .25s ease;
+  }
+
+  #sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay.sidebar-overlay-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #main-content {
+    margin-left: 0;
+  }
+
+  #header-menu-btn,
+  #sidebar-close-btn {
+    display: inline-flex;
+  }
+
+  #sidebar-close-btn {
+    margin-left: auto;
+  }
+
+  body.sidebar-lock {
+    overflow: hidden;
+  }
+
+  #categories-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  #recipes-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  #header > div,
+  #search-filters-section,
+  #meal-categories-section,
+  #all-recipes-section,
+  #meal-details,
+  #products-section,
+  #foodlog-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  #header h1 {
+    font-size: 1.125rem;
+  }
+
+  #header p {
+    display: none;
+  }
+
+  #categories-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #recipes-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #recipes-grid.recipes-list-view .recipe-card {
+    display: block;
+  }
+
+  #logged-items-list > div {
+    align-items: flex-start;
+    gap: .75rem;
+  }
+
+  #logged-items-list > div > div:last-child {
+    width: auto;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .25rem;
+  }
+}
