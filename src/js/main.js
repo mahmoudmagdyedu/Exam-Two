@@ -1108,36 +1108,78 @@ document.getElementById('ScanProduct').addEventListener('click' , ()=>{
   locat("Product Scanner")
   navItem.forEach(e => e.classList.toggle('active', e.innerText.trim() === 'Product Scanner'))
 })
-document.getElementById('CustomEntry').addEventListener('click' , async ()=>{
-  let result = await Swal.fire({
-    title: 'Add Custom Food',
-    html: `
-      <input id="custom-name" class="swal2-input" placeholder="Food name">
-      <input id="custom-calories" type="number" min="0" class="swal2-input" placeholder="Calories">
-      <input id="custom-protein" type="number" min="0" class="swal2-input" placeholder="Protein (g)">
-      <input id="custom-carbs" type="number" min="0" class="swal2-input" placeholder="Carbs (g)">
-      <input id="custom-fat" type="number" min="0" class="swal2-input" placeholder="Fat (g)">`,
-    showCancelButton: true,
-    confirmButtonText: 'Add to Food Log',
-    confirmButtonColor: '#10b981',
-    preConfirm: () => {
-      let name = document.getElementById('custom-name').value.trim()
-      if (!name) {
-        Swal.showValidationMessage('Please enter a food name')
-        return false
-      }
-      return {
-        name,
-        calories: Number(document.getElementById('custom-calories').value) || 0,
-        protein: Number(document.getElementById('custom-protein').value) || 0,
-        carbs: Number(document.getElementById('custom-carbs').value) || 0,
-        fat: Number(document.getElementById('custom-fat').value) || 0
-      }
-    }
-  })
+let customEntryModal = document.getElementById('custom-entry-modal')
 
-  if (!result.isConfirmed) return
-  let food = result.value
+function closeCustomEntryModal() {
+  customEntryModal.classList.add('hidden')
+  customEntryModal.innerHTML = ``
+}
+
+document.getElementById('CustomEntry').addEventListener('click' , ()=>{
+  customEntryModal.innerHTML = `
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+        <div>
+          <h3 class="text-xl font-bold text-gray-900">Add Custom Food</h3>
+          <p class="text-sm text-gray-500 mt-1">Enter the nutrition values manually</p>
+        </div>
+        <button id="close-custom-entry" class="w-9 h-9 rounded-lg hover:bg-gray-100 text-gray-500">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Food Name</label>
+          <input id="custom-name" class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Greek Yogurt">
+          <p id="custom-entry-error" class="hidden text-sm text-red-500 mt-2">Please enter a food name</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Calories</label>
+            <input id="custom-calories" type="number" min="0" class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500" placeholder="0">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Protein (g)</label>
+            <input id="custom-protein" type="number" min="0" class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500" placeholder="0">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Carbs (g)</label>
+            <input id="custom-carbs" type="number" min="0" class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500" placeholder="0">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Fat (g)</label>
+            <input id="custom-fat" type="number" min="0" class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500" placeholder="0">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-200">
+        <button id="cancel-custom-entry" class="px-5 py-2.5 border border-gray-300 rounded-xl font-semibold text-gray-700 hover:bg-gray-100">Cancel</button>
+        <button id="save-custom-entry" class="px-5 py-2.5 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700">Add to Food Log</button>
+      </div>
+    </div>`
+
+  customEntryModal.classList.remove('hidden')
+
+  document.getElementById('close-custom-entry').addEventListener('click', closeCustomEntryModal)
+  document.getElementById('cancel-custom-entry').addEventListener('click', closeCustomEntryModal)
+  document.getElementById('save-custom-entry').addEventListener('click', ()=>{
+    let name = document.getElementById('custom-name').value.trim()
+    if (!name) {
+      document.getElementById('custom-entry-error').classList.remove('hidden')
+      return
+    }
+
+    let food = {
+      name: name,
+      calories: Number(document.getElementById('custom-calories').value) || 0,
+      protein: Number(document.getElementById('custom-protein').value) || 0,
+      carbs: Number(document.getElementById('custom-carbs').value) || 0,
+      fat: Number(document.getElementById('custom-fat').value) || 0
+    }
+
   app.foodLog.addItem({
     type: 'custom',
     name: food.name,
@@ -1146,7 +1188,13 @@ document.getElementById('CustomEntry').addEventListener('click' , async ()=>{
     nutrition: { calories: food.calories, protein: food.protein, carbs: food.carbs, fat: food.fat },
     loggedAt: new Date().toISOString()
   })
+  closeCustomEntryModal()
   getDateFromLoocal()
+  })
+})
+
+customEntryModal.addEventListener('click', e => {
+  if (e.target === customEntryModal) closeCustomEntryModal()
 })
 
 getDateFromLoocal()
